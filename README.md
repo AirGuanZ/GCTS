@@ -28,3 +28,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 ## TODOs
 
 - [ ] More patch placement strategies
+
+## Others
+
+[C++ implementation of classical ImageQuilting algorithm](https://github.com/AirGuanZ/ImageQuilting)
