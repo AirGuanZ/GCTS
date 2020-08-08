@@ -44,9 +44,6 @@ Graph::MinCutResult Graph::findMinCut()
         auto v = vtxQueue.front();
         vtxQueue.pop();
 
-        if(v->position == Int2{ 185, 34 })
-            v = v;
-
         for(auto e : v->edges)
         {
             if(!e)

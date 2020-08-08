@@ -13,6 +13,9 @@ struct Texel
     int xPosSeamCost = 0;  // seam with +x neighbor
     int yPosSeamCost = 0;  // seam with +y neighbor
 
+    bool keepXPosSeam = false;
+    bool keepYPosSeam = false;
+
     Vertex texelVertex;
 };
 

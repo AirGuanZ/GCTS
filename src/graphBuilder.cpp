@@ -84,8 +84,8 @@ Image2D<GraphBuilder::Region> GraphBuilder::buildRegionDistribution(
         texels.height(), texels.width());
 
     const Int2 patchEnd     = patchBeg + patch.size();
-    const Int2 patchCoreBeg = patchBeg + patchOverlapSize;
-    const Int2 patchCoreEnd = patchEnd - patchOverlapSize;
+
+    bool hasNew = false;
 
     for(int y = 0; y < texels.height(); ++y)
     {
@@ -98,16 +98,35 @@ Image2D<GraphBuilder::Region> GraphBuilder::buildRegionDistribution(
             const bool coveredByNewPatch =
                 patchBeg.x <= x && x < patchEnd.x &&
                 patchBeg.y <= y && y < patchEnd.y;
+
+            if(coveredByOldPatch)
+                region = coveredByNewPatch ? Region::Overlap : Region::Old;
+            else
+                region = coveredByNewPatch ? Region::New : Region::Nil;
+
+            if(region == Region::New)
+                hasNew = true;
+        }
+    }
+
+    if(hasNew)
+        return regions;
+
+    const Int2 patchCoreBeg = patchBeg + patchOverlapSize;
+    const Int2 patchCoreEnd = patchEnd - patchOverlapSize;
+
+    for(int y = 0; y < texels.height(); ++y)
+    {
+        for(int x = 0; x < texels.width(); ++x)
+        {
+            auto &region = regions(y, x);
+
             const bool coveredByNewCore =
                 patchCoreBeg.x <= x && x < patchCoreEnd.x &&
                 patchCoreBeg.y <= y && y < patchCoreEnd.y;
 
             if(coveredByNewCore)
                 region = Region::New;
-            else if(coveredByOldPatch)
-                region = coveredByNewPatch ? Region::Overlap : Region::Old;
-            else
-                region = coveredByNewPatch ? Region::New : Region::Nil;
         }
     }
 

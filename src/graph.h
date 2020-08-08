@@ -47,6 +47,8 @@ struct Edge
 
     int a2bRes() const noexcept { return capacity - a2bFlow; }
     int b2aRes() const noexcept { return capacity + a2bFlow; }
+
+    Vertex *another(const Vertex *v) noexcept { return v == a ? b : a; }
 };
 
 class Graph
