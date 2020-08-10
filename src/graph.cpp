@@ -86,19 +86,8 @@ Graph::MinCutResult Graph::findMinCut()
 
         for(auto e : v->edges)
         {
-            if(!e)
-                continue;
-
-            if(v == e->a)
-            {
-                if(!isReachable(e->b))
-                    ret.cut.insert(e);
-            }
-            else
-            {
-                if(!isReachable(e->a))
-                    ret.cut.insert(e);
-            }
+            if(e && !isReachable(e->another(v)))
+                ret.cut.insert(e);
         }
     }
 

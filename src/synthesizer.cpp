@@ -23,6 +23,11 @@ Image2D<RGB> Synthesizer::generate(
     PatchHistory patchHistory;
     std::default_random_engine rng{ std::random_device()() };
 
+    const Int2 overlapSize = {
+        std::max(1, (patchSize_.x - 2) / 2),
+        std::max(1, (patchSize_.y - 2) / 2)
+    };
+
     auto runIter = [&](
         const ImageView2D<RGB> &patch,
         const Int2             &patchBeg,
@@ -35,11 +40,6 @@ Image2D<RGB> Synthesizer::generate(
         // build texel graph
 
         GraphBuilder graphBuilder;
-
-        const Int2 overlapSize = {
-            std::max(1, (patchSize_.x - 2) / 2),
-            std::max(1, (patchSize_.y - 2) / 2)
-        };
 
         auto graph = graphBuilder.build(
             texels, patch, patchBeg, overlapSize, patchHistory);
@@ -101,7 +101,8 @@ Image2D<RGB> Synthesizer::generate(
     for(int i = 0; i < additionalPatchCount_; ++i)
     {
         auto patch = pickPatchRandomly(src, rng);
-        const Int2 patchBeg = pickPatchBegRandomly(texels, rng, nullptr, nullptr);
+        const Int2 patchBeg = pickPatchBegRandomly(
+            texels, rng, nullptr, nullptr);
 
         runIter(patch, patchBeg, nextPatchIndex++);
 

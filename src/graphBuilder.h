@@ -58,6 +58,11 @@ private:
         const Int2 &s, const Int2 &t,
         const PatchHistory &patches) const;
 
+    int computeSeamCost(
+        int AIndex, int BIndex, int CIndex,
+        const Int2 &s, const Int2 &t,
+        const PatchHistory &patches) const;
+
     // returns: (seam vertex, seam src vertex)
     std::pair<Vertex *, Vertex *> addSeam(
         const Int2 &aPos, Texel &aTexel, Vertex *aVertex,

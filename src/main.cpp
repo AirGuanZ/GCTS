@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <agz/utility/image.h>
 #include <agz/utility/string.h>
 

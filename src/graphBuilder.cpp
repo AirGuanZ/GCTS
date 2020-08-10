@@ -83,7 +83,7 @@ Image2D<GraphBuilder::Region> GraphBuilder::buildRegionDistribution(
     Image2D<Region> regions(
         texels.height(), texels.width());
 
-    const Int2 patchEnd     = patchBeg + patch.size();
+    const Int2 patchEnd = patchBeg + patch.size();
 
     bool hasNew = false;
 
@@ -96,8 +96,8 @@ Image2D<GraphBuilder::Region> GraphBuilder::buildRegionDistribution(
 
             const bool coveredByOldPatch = texel.patchIndex >= 0;
             const bool coveredByNewPatch =
-                patchBeg.x <= x && x < patchEnd.x &&
-                patchBeg.y <= y && y < patchEnd.y;
+                patchBeg.x < x && x < patchEnd.x - 1 &&
+                patchBeg.y < y && y < patchEnd.y - 1;
 
             if(coveredByOldPatch)
                 region = coveredByNewPatch ? Region::Overlap : Region::Old;
@@ -156,6 +156,18 @@ int GraphBuilder::computeSeamCost(
     const RGB Bs = patches.getRGB(BIndex, s.x, s.y);
     const RGB Bt = patches.getRGB(BIndex, t.x, t.y);
     return computeSeamCost(As, At, Bs, Bt);
+}
+
+int GraphBuilder::computeSeamCost(
+    int AIndex, int BIndex, int CIndex,
+    const Int2 &s, const Int2 &t,
+    const PatchHistory &patches) const
+{
+    const RGB As = patches.getRGB(AIndex, s.x, s.y);
+    const RGB Bt = patches.getRGB(BIndex, t.x, t.y);
+    const RGB Cs = patches.getRGB(CIndex, s.x, s.y);
+    const RGB Ct = patches.getRGB(CIndex, t.x, t.y);
+    return computeSeamCost(As, Bt, Cs, Ct);
 }
 
 std::pair<Vertex *, Vertex*> GraphBuilder::addSeam(
@@ -232,7 +244,7 @@ void GraphBuilder::addEdge(
     Edge *e = edgeArena_.create();
 
     const int cost = computeSeamCost(
-        aTexel.patchIndex, patches.getCurrentIndex(),
+        aTexel.patchIndex, bTexel.patchIndex, patches.getCurrentIndex(),
         aPos, bPos, patches);
 
     e->a = aVertex;
